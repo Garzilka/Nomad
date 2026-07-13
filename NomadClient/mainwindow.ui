@@ -108,7 +108,7 @@
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_6">
           <item>
-           <layout class="QVBoxLayout" name="verticalLayout_5"/>
+           <layout class="QVBoxLayout" name="VB_MessageList"/>
           </item>
          </layout>
         </widget>

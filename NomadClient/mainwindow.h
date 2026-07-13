@@ -24,6 +24,7 @@ public:
 
 private slots:
     void SendMessage();
+    void ReceiveMessage(const QString Message);
 
 };
 #endif // MAINWINDOW_H

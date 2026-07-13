@@ -9,15 +9,23 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    Core/Events/newmessage.cpp \
     Core/connection.cpp \
+    UI/Authorization/authorizationwidget.cpp \
+    UI/Messager/message.cpp \
     main.cpp \
     mainwindow.cpp
 
 HEADERS += \
+    Core/Events/newmessage.h \
     Core/connection.h \
+    UI/Authorization/authorizationwidget.h \
+    UI/Messager/message.h \
     mainwindow.h
 
 FORMS += \
+    UI/Authorization/authorizationwidget.ui \
+    UI/Messager/message.ui \
     mainwindow.ui
 
 QT += core network

@@ -13,7 +13,7 @@ Connection::Connection(QObject *parent) : QObject(parent)
 
 void Connection::connectToServer(const QString &host, quint16 port)
 {
-    qInfo() << "Conect to " << host << ":" << port;
+    qDebug() << "Conect to " << host << ":" << port;
     m_socket->connectToHost(host, port);
 }
 
@@ -23,6 +23,7 @@ bool Connection::sendMessage(const QString &message)
     {
         m_socket->write(message.toUtf8());
         m_socket->flush();
+        qDebug() << "The message has been sent: " << message;
         return true;
     }
     else
@@ -34,18 +35,20 @@ bool Connection::sendMessage(const QString &message)
 
 void Connection::onConnected()
 {
-    qInfo() << "Successful connection!";
+    qDebug() << "Successful connection!";
 }
 
 void Connection::onReadyRead()
 {
     QByteArray data = m_socket->readAll();
-    qInfo() << "Message received: " << QString::fromUtf8(data);
+    QString Message = QString::fromUtf8(data);
+    emit OnNewMessage(Message);
+    qDebug() << "Message received: " << Message;
 }
 
 void Connection::onDisconnected()
 {
-    qInfo() << "Disconnect!";
+    qDebug() << "Disconnect!";
 }
 
 void Connection::onErrorOccurred(QAbstractSocket::SocketError socketError)
