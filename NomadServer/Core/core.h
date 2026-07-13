@@ -5,6 +5,7 @@
 #include <QTcpServer>
 #include <QTcpSocket>
 #include <QList>
+#include "Core/Client/client.h"
 
 
 class QCore : public QObject {
@@ -15,12 +16,12 @@ public:
 
 private slots:
     void onNewConnection();
-    void onReadyRead();
-    void onClientDisconnected();
+    void onReadyRead(Client *sender, const QByteArray &data);
+    void onClientDisconnected(Client *client);
 
 private:
     QTcpServer *m_tcpServer;
-    QList<QTcpSocket*> m_clientSockets; // Список всех подключенных клиентов
+    QList<Client*> m_clients; // Список всех подключенных клиентов
 };
 
 #endif // CORE_H

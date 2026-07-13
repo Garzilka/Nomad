@@ -1,6 +1,5 @@
 #include "core.h"
 
-
 QCore::QCore(QObject *parent) : QObject(parent)
 {
     m_tcpServer = new QTcpServer(this);
@@ -10,49 +9,49 @@ QCore::QCore(QObject *parent) : QObject(parent)
 
 bool QCore::startServer(quint16 port)
 {
-    if (!m_tcpServer->listen(QHostAddress::Any, port)) {
-        qCritical() << "Сервер не смог запуститься:" << m_tcpServer->errorString();
+    if (!m_tcpServer->listen(QHostAddress::Any, port))
+    {
+        qCritical() << "ERROR: Server couldn't start. Error message:" << m_tcpServer->errorString();
         return false;
     }
-    qInfo() << "Сервер успешно запущен на порту" << port;
+    qInfo() << "Server has been running!" << port;
     return true;
 }
 
 void QCore::onNewConnection()
 {
-    // Получаем сокет для общения с новым клиентом
     QTcpSocket *clientSocket = m_tcpServer->nextPendingConnection();
 
-    m_clientSockets.append(clientSocket);
-    qInfo() << "Новое подключение от:" << clientSocket->peerAddress().toString();
+    Client *client = new Client(clientSocket, this);
+    m_clients.append(client);
 
-    // Связываем сигналы сокета с обработчиками
-    connect(clientSocket, &QTcpSocket::readyRead, this, &QCore::onReadyRead);
-    connect(clientSocket, &QTcpSocket::disconnected, this, &QCore::onClientDisconnected);
+    qInfo() << "New connection, make new client worker:" << client->peerAddress();
+
+
+    connect(client, &Client::messageReceived, this, &QCore::onReadyRead);
+    connect(client, &Client::disconnected, this, &QCore::onClientDisconnected);
 }
 
-void QCore::onReadyRead()
+void QCore::onReadyRead(Client *sender, const QByteArray &data)
 {
-    QTcpSocket *senderSocket = qobject_cast<QTcpSocket*>(sender());
-    if (!senderSocket) return;
+    if (!sender) return;
 
-    QByteArray data = senderSocket->readAll();
-    qInfo() << "Получено сообщение:" << data;
+    qInfo() << "NewMessage:" << data;
 
-    for (QTcpSocket *client : m_clientSockets)
+    for (Client *client : m_clients)
     {
-        if (client == senderSocket) continue;
+        if (client == sender) continue;
 
-        client->write(data);
+        client->sendMessage(data);
     }
 }
 
-void QCore::onClientDisconnected()
+void QCore::onClientDisconnected(Client *client)
 {
     QTcpSocket *clientSocket = qobject_cast<QTcpSocket*>(sender());
     if (!clientSocket) return;
 
-    qInfo() << "Клиент отключился:" << clientSocket->peerAddress().toString();
-    m_clientSockets.removeAll(clientSocket);
-    clientSocket->deleteLater();
+    qInfo() << "Client: " << client->peerAddress() << " leave from the chat.";
+    m_clients.removeAll(client);
+    client->deleteLater();
 }
