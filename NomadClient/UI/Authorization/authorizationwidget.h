@@ -7,16 +7,26 @@ namespace Ui {
 class AuthorizationWidget;
 }
 
-class AuthorizationWidget : public QWidget
+class QAuthorizationWidget : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit AuthorizationWidget(QWidget *parent = nullptr);
-    ~AuthorizationWidget();
+    explicit QAuthorizationWidget(QWidget *parent = nullptr);
+    ~QAuthorizationWidget();
+
+Q_SIGNALS:
+    void OnAuthorizationSuccess();
 
 private:
     Ui::AuthorizationWidget *ui;
+
+private slots:
+    void AuthMessage();
+    void RegMessage();
+
+    void GoToReg();
+    void GoToAuth();
 };
 
 #endif // AUTHORIZATIONWIDGET_H

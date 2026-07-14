@@ -12,19 +12,23 @@ SOURCES += \
     Core/Events/newmessage.cpp \
     Core/connection.cpp \
     UI/Authorization/authorizationwidget.cpp \
+    UI/Main/mainwidget.cpp \
     UI/Messager/message.cpp \
     main.cpp \
     mainwindow.cpp
 
 HEADERS += \
+    Core/Data/CoreData.h \
     Core/Events/newmessage.h \
     Core/connection.h \
     UI/Authorization/authorizationwidget.h \
+    UI/Main/mainwidget.h \
     UI/Messager/message.h \
     mainwindow.h
 
 FORMS += \
     UI/Authorization/authorizationwidget.ui \
+    UI/Main/mainwidget.ui \
     UI/Messager/message.ui \
     mainwindow.ui
 

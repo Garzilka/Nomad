@@ -14,11 +14,14 @@ Client::~Client()
     qInfo() << "Client: " << peerAddress() << " has been removed";
 }
 
-void Client::sendMessage(const QByteArray &data)
+void Client::sendMessage(SBaseMessageData &data)
 {
     if (m_socket->state() != QAbstractSocket::ConnectedState) return;
 
-    m_socket->write(data);
+    QJsonDocument doc(data.ToJSON());
+    QString jsonString = doc.toJson(QJsonDocument::Indented);
+
+    m_socket->write(jsonString.toUtf8());
     m_socket->flush();
 }
 
@@ -30,7 +33,17 @@ QString Client::peerAddress() const
 void Client::onReadyRead()
 {
     QByteArray data = m_socket->readAll();
-    emit messageReceived(this, data);
+
+    QJsonParseError error;
+    QJsonDocument doc = QJsonDocument::fromJson(data, &error);
+
+    if (error.error != QJsonParseError::NoError) {
+        qDebug() << "Ошибка парсинга JSON:" << error.errorString();
+        return;
+    }
+
+    QJsonObject MainObject = doc.object();
+    emit OnMessageReceived(this, MainObject);
 }
 
 void Client::onDisconnected()

@@ -9,11 +9,12 @@ CONFIG += c++17 cmdline
 SOURCES += \
         Core/Client/client.cpp \
         Core/Client/clientmanager.cpp \
-        Core/Data/repository.cpp \
+        Core/DataBase/repository.cpp \
         Core/core.cpp \
         main.cpp
 
 QT += core network
+QT += sql
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -23,5 +24,6 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 HEADERS += \
     Core/Client/client.h \
     Core/Client/clientmanager.h \
-    Core/Data/repository.h \
+    Core/Data/CoreData.h \
+    Core/DataBase/repository.h \
     Core/core.h

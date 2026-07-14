@@ -3,6 +3,8 @@
 
 #include <QMainWindow>
 #include "Core/connection.h"
+#include "UI/Main/mainwidget.h"
+#include "UI/Authorization/authorizationwidget.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -16,15 +18,14 @@ class MainWindow : public QMainWindow
 
 private:
     Ui::MainWindow *ui;
-    Connection* MyConnection = nullptr;
+    QMainWidget* MainWidget = nullptr;
+    QAuthorizationWidget* AuthWidget = nullptr;
 
+private slots:
+    void AuthComplete();
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-
-private slots:
-    void SendMessage();
-    void ReceiveMessage(const QString Message);
 
 };
 #endif // MAINWINDOW_H

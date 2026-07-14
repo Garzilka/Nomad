@@ -1,9 +1,11 @@
 #include "core.h"
+#include "Core/DataBase/repository.h"
 
 QCore::QCore(QObject *parent) : QObject(parent)
 {
     m_tcpServer = new QTcpServer(this);
     connect(m_tcpServer, &QTcpServer::newConnection, this, &QCore::onNewConnection);
+    QRepository::getInstance();
 }
 
 
@@ -28,21 +30,38 @@ void QCore::onNewConnection()
     qInfo() << "New connection, make new client worker:" << client->peerAddress();
 
 
-    connect(client, &Client::messageReceived, this, &QCore::onReadyRead);
+    connect(client, &Client::OnMessageReceived, this, &QCore::onReadyRead);
     connect(client, &Client::disconnected, this, &QCore::onClientDisconnected);
 }
 
-void QCore::onReadyRead(Client *sender, const QByteArray &data)
+void QCore::onReadyRead(Client *sender, QJsonObject& data)
 {
     if (!sender) return;
+    ETypeOfMessage TypeMessage = static_cast<ETypeOfMessage>(data["TypeMessage"].toInt());
 
-    qInfo() << "NewMessage:" << data;
+    if(TypeMessage == ETypeOfMessage::Login || TypeMessage == ETypeOfMessage::Registration)
+    {
+        bool Response = false;
+        if(TypeMessage == ETypeOfMessage::Login)
+        {
+            Response = QRepository::getInstance().CheckAuth(SAuthorizationData(data));
+        }
+        else
+        {
+            Response = QRepository::getInstance().RegisterNewAccount(SAuthorizationData(data));
+        }
+
+        SBaseMessageData Result("", ETypeOfMessage::AuthResponse, Response);
+        sender->sendMessage(Result);
+        return;
+    }
+
 
     for (Client *client : m_clients)
     {
         if (client == sender) continue;
 
-        client->sendMessage(data);
+        //client->sendMessage(data);
     }
 }
 

@@ -6,6 +6,7 @@
 #include <QTcpSocket>
 #include <QList>
 #include "Core/Client/client.h"
+#include "Core/Data/CoreData.h"
 
 
 class QCore : public QObject {
@@ -16,7 +17,7 @@ public:
 
 private slots:
     void onNewConnection();
-    void onReadyRead(Client *sender, const QByteArray &data);
+    void onReadyRead(Client *sender, QJsonObject& data);
     void onClientDisconnected(Client *client);
 
 private:

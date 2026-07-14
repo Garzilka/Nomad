@@ -3,17 +3,20 @@
 
 #include <QObject>
 #include <QTcpSocket>
+#include "Core/Data/CoreData.h"
 
-class Client : public QObject {
+class Client : public QObject
+{
     Q_OBJECT
+
 public:
     explicit Client(QTcpSocket *socket, QObject *parent = nullptr);
     ~Client();
-    void sendMessage(const QByteArray &data);
+    void sendMessage(SBaseMessageData &data);
     QString peerAddress() const;
 
 signals:
-    void messageReceived(Client *sender, const QByteArray &data);
+    void OnMessageReceived(Client *sender, QJsonObject& data);
     void disconnected(Client *client);
 
 private slots:
@@ -22,6 +25,8 @@ private slots:
 
 private:
     QTcpSocket *m_socket;
+    QString Login;
+    QString Nickname;
 };
 
 #endif // CLIENT_H
