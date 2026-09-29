@@ -9,6 +9,7 @@ int main(int argc, char *argv[])
 
     if(!MyCoreServer->startServer(55))
     {
+        delete MyCoreServer;
         return -1;
     }
 

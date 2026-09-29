@@ -1,16 +1,17 @@
 #include "core.h"
 #include "Core/DataBase/repository.h"
 
-QCore::QCore(QObject *parent) : QObject(parent)
-{
-    m_tcpServer = new QTcpServer(this);
-    connect(m_tcpServer, &QTcpServer::newConnection, this, &QCore::onNewConnection);
-    QRepository::getInstance();
-}
+QCore::QCore(QObject *parent) : QObject(parent){}
 
 
 bool QCore::startServer(quint16 port)
 {
+    if(!QRepository::getInstance().Run())
+    {
+        return false;
+    }
+    m_tcpServer = new QTcpServer(this);
+    connect(m_tcpServer, &QTcpServer::newConnection, this, &QCore::onNewConnection);
     if (!m_tcpServer->listen(QHostAddress::Any, port))
     {
         qCritical() << "ERROR: Server couldn't start. Error message:" << m_tcpServer->errorString();
@@ -51,7 +52,7 @@ void QCore::onReadyRead(Client *sender, QJsonObject& data)
             Response = QRepository::getInstance().RegisterNewAccount(SAuthorizationData(data));
         }
 
-        SBaseMessageData Result("", ETypeOfMessage::AuthResponse, Response);
+        SBaseMessageData Result(ETypeOfMessage::AuthResponse, Response);
         sender->sendMessage(Result);
         return;
     }

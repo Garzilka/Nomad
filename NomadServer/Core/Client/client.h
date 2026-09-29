@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QTcpSocket>
 #include "Core/Data/CoreData.h"
+#include "Core/Lib/cryptolib.h"
 
 class Client : public QObject
 {
@@ -12,7 +13,7 @@ class Client : public QObject
 public:
     explicit Client(QTcpSocket *socket, QObject *parent = nullptr);
     ~Client();
-    void sendMessage(SBaseMessageData &data);
+    void sendMessage(const SBaseMessageData &_Message);
     QString peerAddress() const;
 
 signals:
@@ -25,8 +26,10 @@ private slots:
 
 private:
     QTcpSocket *m_socket;
+    QByteArray m_buffer;
     QString Login;
     QString Nickname;
+    QCryptoLib* cryptolib = nullptr;
 };
 
 #endif // CLIENT_H

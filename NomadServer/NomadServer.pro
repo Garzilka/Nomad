@@ -9,7 +9,10 @@ CONFIG += c++17 cmdline
 SOURCES += \
         Core/Client/client.cpp \
         Core/Client/clientmanager.cpp \
+        Core/DataBase/Rules/userscheckrule.cpp \
+        Core/DataBase/checkdatabaserule.cpp \
         Core/DataBase/repository.cpp \
+        Core/Lib/cryptolib.cpp \
         Core/core.cpp \
         main.cpp
 
@@ -25,5 +28,13 @@ HEADERS += \
     Core/Client/client.h \
     Core/Client/clientmanager.h \
     Core/Data/CoreData.h \
+    Core/DataBase/Rules/userscheckrule.h \
+    Core/DataBase/checkdatabaserule.h \
     Core/DataBase/repository.h \
+    Core/Lib/cryptolib.h \
     Core/core.h
+
+
+INCLUDEPATH += "C:/Program Files/OpenSSL-Win64/include"
+LIBS += "C:/Program Files/OpenSSL-Win64/lib/VC/x64/MD/libcrypto.lib"
+LIBS += "C:/Program Files/OpenSSL-Win64/lib/VC/x64/MD/libssl.lib"
