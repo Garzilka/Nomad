@@ -15,9 +15,10 @@ public:
     ~Client();
     void sendMessage(const SBaseMessageData &_Message);
     QString peerAddress() const;
-
+    void setUUID(QString UUID) {_UUID = UUID;}
+    QString getGUID() { return _UUID; }
 signals:
-    void OnMessageReceived(Client *sender, QJsonObject& data);
+    void OnMessageReceived(Client *sender, QJsonObject& data, ETypeOfMessage& TypeMessage);
     void disconnected(Client *client);
 
 private slots:
@@ -27,7 +28,7 @@ private slots:
 private:
     QTcpSocket *m_socket;
     QByteArray m_buffer;
-    QString Login;
+    QString _UUID;
     QString Nickname;
     QCryptoLib* cryptolib = nullptr;
 };

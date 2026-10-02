@@ -25,6 +25,9 @@ Client::~Client()
 
 void Client::sendMessage(const SBaseMessageData &_Message)
 {
+    //TODO: Kill client
+    if(m_socket == nullptr) return;
+
     if (m_socket->state() != QAbstractSocket::ConnectedState) return;
 
     QJsonDocument doc(_Message.ToJSON());
@@ -87,9 +90,9 @@ void Client::onReadyRead()
         }
 
         QJsonObject MainObject = doc.object();
-        SBaseMessageData Data(MainObject);
+        ETypeOfMessage TypeMessage = static_cast<ETypeOfMessage>(MainObject["TypeMessage"].toInt());
 
-        if (Data.Response && Data.TypeMessage == ETypeOfMessage::Crypto)
+        if (TypeMessage == ETypeOfMessage::Crypto)
         {
             SCyptsKeysData CryptMessage(MainObject);
             QByteArray peerKey = QByteArray::fromBase64(CryptMessage.PublicKey.toUtf8());
@@ -104,7 +107,7 @@ void Client::onReadyRead()
             return;
         }
 
-        emit OnMessageReceived(this, MainObject);
+        emit OnMessageReceived(this, MainObject, TypeMessage);
     }
 }
 

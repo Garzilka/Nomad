@@ -1,5 +1,7 @@
 #include "core.h"
 #include "Core/DataBase/repository.h"
+#include "Core/Client/clientmanager.h"
+#include "Core/Channel/channelsmanager.h"
 
 QCore::QCore(QObject *parent) : QObject(parent){}
 
@@ -35,34 +37,49 @@ void QCore::onNewConnection()
     connect(client, &Client::disconnected, this, &QCore::onClientDisconnected);
 }
 
-void QCore::onReadyRead(Client *sender, QJsonObject& data)
+void QCore::onReadyRead(Client *sender, QJsonObject& data, ETypeOfMessage& TypeMessage)
 {
     if (!sender) return;
-    ETypeOfMessage TypeMessage = static_cast<ETypeOfMessage>(data["TypeMessage"].toInt());
 
     if(TypeMessage == ETypeOfMessage::Login || TypeMessage == ETypeOfMessage::Registration)
     {
-        bool Response = false;
-        if(TypeMessage == ETypeOfMessage::Login)
-        {
-            Response = QRepository::getInstance().CheckAuth(SAuthorizationData(data));
-        }
-        else
-        {
-            Response = QRepository::getInstance().RegisterNewAccount(SAuthorizationData(data));
-        }
-
-        SBaseMessageData Result(ETypeOfMessage::AuthResponse, Response);
-        sender->sendMessage(Result);
+        QClientManager::getInstance().newClient(sender, data, TypeMessage);
         return;
     }
 
-
-    for (Client *client : m_clients)
+    if(TypeMessage == ETypeOfMessage::Message || TypeMessage == ETypeOfMessage::PrivateMessage)
     {
-        if (client == sender) continue;
+        QChannelsManager::getInstance().newMessage(sender, data, TypeMessage);
+        return;
+    }
 
-        //client->sendMessage(data);
+    if(TypeMessage == ETypeOfMessage::RequestFriend)
+    {
+        QClientManager::getInstance().handleFriendRequest(sender, data);
+        return;
+    }
+
+    if(TypeMessage == ETypeOfMessage::ResponseFriend)
+    {
+        QClientManager::getInstance().handleFriendResponseProcessing(sender, data);
+        return;
+    }
+
+    if(TypeMessage == ETypeOfMessage::GetFriendsList)
+    {
+        QClientManager::getInstance().handleGetFriendsList(sender);
+        return;
+    }
+
+    if(TypeMessage == ETypeOfMessage::SearchUsers)
+    {
+        QClientManager::getInstance().handleSearchUsers(sender, data);
+        return;
+    }
+    if(TypeMessage == ETypeOfMessage::OpenPrivateChat)
+    {
+        QChannelsManager::getInstance().handleOpenPrivateChat(sender, data);
+        return;
     }
 }
 

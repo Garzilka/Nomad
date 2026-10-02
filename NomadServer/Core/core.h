@@ -17,7 +17,7 @@ public:
 
 private slots:
     void onNewConnection();
-    void onReadyRead(Client *sender, QJsonObject& data);
+    void onReadyRead(Client *sender, QJsonObject& data, ETypeOfMessage& TypeMessage);
     void onClientDisconnected(Client *client);
 
 private:
