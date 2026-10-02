@@ -2,30 +2,47 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 
-Item {
+Item
+{
     id: root
-    anchors.fill: parent
 
     // Основная модель Kanban-доски
-    ListModel {
+    ListModel
+    {
         id: boardModel
-        ListElement {
+        ListElement
+        {
             columnTitle: "БЭКЛОГ"
-            tasks: [
-                ListElement { taskText: "Интеграция с C++ API" },
-                ListElement { taskText: "Настроить права доступа" }
+            tasks:
+            [
+                ListElement
+                {
+                    taskText: "Интеграция с C++ API"
+                },
+                ListElement
+                {
+                    taskText: "Настроить права доступа"
+                }
             ]
         }
-        ListElement {
+        ListElement
+        {
             columnTitle: "В РАБОТЕ"
-            tasks: [
-                ListElement { taskText: "Разработать интерфейс Kanban" }
+            tasks:
+            [
+                ListElement
+                {
+                    taskText: "Разработать интерфейс Kanban"
+                }
             ]
         }
-        ListElement {
+        ListElement
+        {
             columnTitle: "ГОТОВО"
-            tasks: [
-                ListElement {
+            tasks:
+            [
+                ListElement
+                {
                     taskText: "Спроектировать ToolBar"
                 }
             ]
@@ -36,7 +53,8 @@ Item {
     property string selectedColumnTitle: ""
 
     // Горизонтальный список для КОЛОНОК
-    ListView {
+    ListView
+    {
         id: columnsListView
         anchors.fill: parent
         anchors.margins: 20
@@ -44,7 +62,9 @@ Item {
         spacing: 16
         model: boardModel
         clip: true
-        delegate: Rectangle {
+
+        delegate: Rectangle
+        {
             id: columnContainer
             width: 280
             height: columnsListView.height - 20
@@ -52,30 +72,36 @@ Item {
             radius: 8
             property string currentColumnName: columnTitle
 
-            ColumnLayout {
+            ColumnLayout
+            {
                 anchors.fill: parent
                 anchors.margins: 12
                 spacing: 12
 
-                RowLayout {
+                RowLayout
+                {
                     Layout.fillWidth: true
-                    Text {
+                    Text
+                    {
                         text: columnTitle;
                         color: "white";
                         font.bold: true;
                         font.pixelSize: 14
                     }
-                    Item {
+                    Item
+                    {
                         Layout.fillWidth: true
                     }
-                    Text {
+                    Text
+                    {
                         text: tasksListView.count;
                         color: "#949ba4";
                         font.pixelSize: 12
                     }
                 }
 
-                ListView {
+                ListView
+                {
                     id: tasksListView
                     Layout.fillWidth: true
                     Layout.fillHeight: true
@@ -83,7 +109,8 @@ Item {
                     model: tasks
                     clip: true
 
-                    delegate: Rectangle {
+                    delegate: Rectangle
+                    {
                         width: tasksListView.width
                         height: 60
                         color: "#313338"
@@ -91,22 +118,26 @@ Item {
                         border.color: cardMouseArea.containsMouse ? "#5865f2" : "transparent"
                         border.width: 1
 
-                        MouseArea {
+                        MouseArea
+                        {
                             id: cardMouseArea
                             anchors.fill: parent
                             hoverEnabled: true
                             cursorShape: Qt.PointingHandCursor
-                            onClicked: {
+                            onClicked:
+                            {
                                 root.selectedTaskText = taskText
                                 root.selectedColumnTitle = columnContainer.currentColumnName
                                 taskModal.open()
                             }
                         }
 
-                        ColumnLayout {
+                        ColumnLayout
+                        {
                             anchors.fill: parent
                             anchors.margins: 10
-                            Text {
+                            Text
+                            {
                                 text: taskText
                                 color: "#dbdee1"
                                 font.pixelSize: 13
@@ -121,9 +152,10 @@ Item {
     }
 
     // ==========================================
-    // МОДАЛЬНОЕ ОКНО (Popup) С ЧАТОМ КОММЕНТАРИЕВ
+    // МОДАЛЬНОЕ ОКНО (Popup) С ЧАТОМ
     // ==========================================
-    TaskPopup {
+    TaskPopup
+    {
         id: taskModal
     }
 }

@@ -2,6 +2,7 @@
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 #include "Core/connection.h"
+#include "Core/UIManager/uimanager.h"
 
 int main(int argc, char *argv[])
 {
@@ -12,7 +13,11 @@ int main(int argc, char *argv[])
     QConnection& Connection = QConnection::getInstance();
     engine.rootContext()->setContextProperty("ClientConnection", &Connection);
 
-
+    QUIManager& UIManager = QUIManager::getInstance();
+    engine.rootContext()->setContextProperty("UIStateManager", &UIManager);
+    engine.rootContext()->setContextProperty("ServerManager", UIManager.GetServerManager());
+    engine.rootContext()->setContextProperty("FriendsManager", UIManager.GetFriendManager());
+    engine.rootContext()->setContextProperty("ChatManager", UIManager.GetChatManager());
 
     QObject::connect(
         &engine,

@@ -21,15 +21,81 @@ qt_add_executable(appNomadClient
 
 qt_add_qml_module(appNomadClient
     URI NomadClient
+    VERSION 1.0
+
     QML_FILES
         Main.qml
-        QML_FILES LoginScreen.qml MainWorkspace.qml
-        QML_FILES KanBan/KanBan.qml KanBan/TaskPopup.qml
-        QML_FILES DocumentEditor/DocumentEditor.qml
-        SOURCES Core/connection.cpp Core/connection.h
-        SOURCES Core/Events/newmessage.cpp Core/Events/newmessage.h
-        SOURCES Core/Data/CoreData.h
-        SOURCES Core/Lib/cryptolib.h Core/Lib/cryptolib.cpp
+        UI/LoginScreen.qml
+        UI/MainWorkspace.qml
+        UI/MainLeftPannel.qml
+
+        UI/Settings/MainSettings.qml
+
+        #============= SERVER ==========#
+
+        UI/Server/Server.qml
+        UI/Server/ServerPannel.qml
+        UI/Server/ServerWorkSpace.qml
+
+        UI/Server/ServerChat/Chats.qml
+
+        UI/Server/KanBan/Boards.qml
+        UI/Server/KanBan/KanBan.qml
+        UI/Server/KanBan/TaskPopup.qml
+
+        UI/Server/DocumentEditor/Documents.qml
+        UI/Server/DocumentEditor/DocumentEditor.qml
+
+        #============= FRIENDS ==========#
+
+        UI/Friends/Friends.qml
+        UI/Friends/FriendsPannel.qml
+        UI/Friends/FriendsWorkSpace.qml
+
+        UI/Friends/FriendList/FriendList.qml
+        UI/Friends/FriendList/FriendListItem.qml
+        UI/Friends/FriendList/FriendSearchWidget.qml
+
+        UI/Friends/Requestlist/FriendRequestsWidget.qml
+
+        #============= COMMON ==========#
+
+        UI/Common/TitleBar/TitleBar.qml
+        UI/Common/Members/Members.qml
+
+        UI/Common/Chat/ChatSpace.qml
+        UI/Common/Chat/MessageList.qml
+        UI/Common/Chat/ChatMessageContainer.qml
+        UI/Common/Chat/Containers/TextMessageContainer.qml
+        UI/Common/Chat/Containers/InvitationMessageContainer.qml
+
+        #============= SOURCES ==========#
+
+    SOURCES
+        Core/connection.cpp
+        Core/connection.h
+        Core/Events/newmessage.cpp
+        Core/Events/newmessage.h
+        Core/Data/CoreData.h
+        Core/Lib/cryptolib.h
+        Core/Lib/cryptolib.cpp
+
+        #============= UI ==========#
+        Core/UIManager/uimanager.h
+        Core/UIManager/uimanager.cpp
+
+        #============= SERVER ==========#
+        Core/UIManager/Server/servermanager.h
+        Core/UIManager/Server/servermanager.cpp
+
+        #============= FRIENDS ==========#
+        Core/UIManager/Friend/friendmanager.h
+        Core/UIManager/Friend/friendmanager.cpp
+
+        #============= CHAT ==========#
+        Core/UIManager/ChatManager/chatmanager.h
+        Core/UIManager/ChatManager/chatmanager.cpp
+        QML_FILES MainWindow.qml
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.

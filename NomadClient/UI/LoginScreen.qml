@@ -4,137 +4,20 @@ import QtQuick.Controls.Basic
 
 Item
 {
-    readonly property color colorBg: "#1e1f22"       // Глубокий темный фон
-    readonly property color colorAuth: "#313338"    // Фон блоков
-    readonly property color colorText: "#b5bac1"     // Основной текст
-
+    readonly property color colorBg: "#1e1f22"
+    readonly property color colorAuth: "#313338"
+    readonly property color colorText: "#b5bac1"
 
     id: loginScreen
     anchors.fill: parent
 
-    property bool isLoading: true
-    property bool minTimeElapsed: false
-    property bool isLoginMode: true // Состояние окна: true — Вход, false — Регистрация
-
-    function checkLoadingStatus()
-    {
-        if (ClientConnection.securitySuccessfully && minTimeElapsed)
-        {
-            loginScreen.isLoading = false;
-        }
-    }
-
-    Connections
-    {
-        target: ClientConnection
-        onSecuritySuccessfullyChanged:
-        {
-            console.log("C++ сообщил о готовности ключей:", ClientConnection.securitySuccessfully)
-        }
-    }
-    // 2. ТАЙМЕР НА 2 СЕКУНДЫ
-    Timer
-    {
-        id: startupTimer
-        interval: 2000
-        running: true // Стартует сразу при запуске экрана
-        repeat: false
-        onTriggered:
-        {
-            console.log("Минимальные 2 секунды анимации прошли.")
-            if (ClientConnection.securitySuccessfully)
-            {
-                loginScreen.minTimeElapsed = true
-                loginScreen.checkLoadingStatus()
-            }
-        }
-    }
-
+    property bool isLoginMode: true
 
     Rectangle
     {
         anchors.fill: parent
         color: colorBg
-        // ==========================================
-        // БЛОК ЗАГРУЗКИ (Показывается, когда isLoading === true)
-        // ==========================================
-        ColumnLayout
-        {
-            id: loadingBlock
-            anchors.centerIn: parent
-            spacing: 24
-            visible: isLoading
-            opacity: visible ? 1.0 : 0.0
 
-            // Плавное исчезновение/появление блока загрузки
-            Behavior on opacity { NumberAnimation { duration: 250 } }
-
-            // Кастомный анимированный спиннер (круг)
-            Rectangle
-            {
-                Layout.alignment: Qt.AlignHCenter
-                width: 50
-                height: 50
-                color: "transparent"
-                border.color: "#35373c"
-                border.width: 4
-                radius: 25
-
-                // Светящийся сектор загрузки
-                Rectangle
-                {
-                    width: 50
-                    height: 50
-                    color: "transparent"
-                    border.color: "#5865f2" // Фирменный цвет Discord
-                    border.width: 4
-                    radius: 25
-                    clip: true
-
-                    // Делаем из круга четверть сектора
-                    Rectangle
-                    {
-                        width: 25
-                        height: 25
-                        color: colorBg
-                        anchors.bottom: parent.bottom
-                        anchors.right: parent.right
-                    }
-                    Rectangle
-                    {
-                        width: 25
-                        height: 25
-                        color: colorBg
-                        anchors.bottom: parent.bottom
-                        anchors.left: parent.left
-                    }
-                }
-
-                // Бесконечная анимация вращения спиннера
-                RotationAnimator on rotation
-                {
-                    from: 0
-                    to: 360
-                    duration: 1000
-                    loops: Animation.Infinite
-                    running: !NomadClient.SecuritySuccefully
-                }
-            }
-
-            Text
-            {
-                text: "Установление безопасного соединения..."
-                font.pixelSize: 16
-                font.bold: true
-                color: "#ffffff"
-                horizontalAlignment: Text.AlignHCenter
-                Layout.fillWidth: true
-            }
-        }
-
-        // ==========================================
-        // ЦЕНТРАЛЬНАЯ КАРТОЧКА ФОРМЫ (Когда isLoading === false)
-        // ==========================================
         Rectangle
         {
             id: authCard
@@ -144,12 +27,6 @@ Item
             color: colorAuth
             radius: 8
 
-            // Защита от кликов по невидимой форме во время загрузки
-            visible: !isLoading
-            opacity: visible ? 1.0 : 0.0
-
-            // Плавное появление формы после окончания загрузки
-            Behavior on opacity { NumberAnimation { duration: 300 } }
             Behavior on height { NumberAnimation { duration: 150 } }
 
             ColumnLayout
@@ -158,7 +35,10 @@ Item
                 anchors.margins: 32
                 spacing: 20
 
+
+                // ==========================================
                 // Заголовки
+                // ==========================================
                 ColumnLayout
                 {
                     Layout.fillWidth: true
@@ -184,8 +64,11 @@ Item
                     }
                 }
 
+                // ==========================================
                 // Поля ввода
-                ColumnLayout {
+                // ==========================================
+                ColumnLayout
+                {
                     spacing: 16
                     Layout.fillWidth: true
 
@@ -221,19 +104,24 @@ Item
                         }
                     }
 
+                    // ==========================================
                     // Поле ИМЯ ПОЛЬЗОВАТЕЛЯ
-                    ColumnLayout {
+                    // ==========================================
+                    ColumnLayout
+                    {
                         spacing: 8
                         Layout.fillWidth: true
 
-                        Text {
+                        Text
+                        {
                             text: loginScreen.isLoginMode ? "ДАННЫЕ ВХОДА (ИМЯ)" : "ИМЯ ПОЛЬЗОВАТЕЛЯ"
                             font.pixelSize: 12
                             font.bold: true
                             color: colorText
                         }
 
-                        TextField {
+                        TextField
+                        {
                             id: usernameField
                             Layout.fillWidth: true
                             implicitHeight: 40
@@ -248,26 +136,32 @@ Item
                         }
                     }
 
+                    // ==========================================
                     // Поле ПАРОЛЬ
-                    ColumnLayout {
+                    // ==========================================
+                    ColumnLayout
+                    {
                         spacing: 8
                         Layout.fillWidth: true
 
-                        Text {
+                        Text
+                        {
                             text: "ПАРОЛЬ"
                             font.pixelSize: 12
                             font.bold: true
                             color: colorText
                         }
 
-                        TextField {
+                        TextField
+                        {
                             id: passwordField
                             Layout.fillWidth: true
                             implicitHeight: 40
                             echoMode: TextInput.Password
                             color: "#f2f3f5"
                             placeholderTextColor: "#949ba4"
-                            background: Rectangle {
+                            background: Rectangle
+                            {
                                 color: "#1e1f22"
                                 radius: 4
                                 border.color: passwordField.activeFocus ? "#5865f2" : "transparent"
@@ -277,7 +171,9 @@ Item
                     }
                 }
 
+                // ==========================================
                 // Кнопки управления
+                // ==========================================
                 ColumnLayout
                 {
                     spacing: 12
@@ -288,16 +184,19 @@ Item
                         Layout.fillWidth: true
                         implicitHeight: 44
 
-                        HoverHandler {
+                        HoverHandler
+                        {
                             cursorShape: Qt.PointingHandCursor
                         }
 
-                        background: Rectangle {
+                        background: Rectangle
+                        {
                             color: parent.hovered ? "#4752c4" : "#5865f2"
                             radius: 3
                         }
 
-                        contentItem: Text {
+                        contentItem: Text
+                        {
                             text: loginScreen.isLoginMode ? "Вход" : "Продолжить"
                             color: "#ffffff"
                             font.pixelSize: 16
